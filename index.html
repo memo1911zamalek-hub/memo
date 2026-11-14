@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="تحدي كرة القدم - أكثر من 200 سؤال في تخمين اللاعبين والانتقالات والمعلومات العامة.">
+  <title>تحدي الكرة | Football Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-ball">⚽</span><span>تحدي <b>الكرة</b></span></a>
+    <div class="top-meta"><span class="live-dot"></span> اختبر معلوماتك الكروية</div>
+  </header>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">THE ULTIMATE FOOTBALL QUIZ</span>
+        <h1>هل أنت <span>أسطورة</span><br>في كرة القدم؟</h1>
+        <p>أكثر من 200 سؤال بين تخمين اللاعبين، الانتقالات التاريخية والمعلومات الكروية. اختر مستواك وابدأ التحدي!</p>
+        <div class="hero-stats">
+          <div><strong id="total-count">208+</strong><small>سؤال متنوع</small></div>
+          <div><strong>3</strong><small>مستويات صعوبة</small></div>
+          <div><strong>3</strong><small>أنماط لعب</small></div>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="hero-ball">⚽</div><div class="floating-tag tag-top">GOAL!</div><div class="floating-tag tag-bottom">★ MVP</div>
+      </div>
+    </section>
+
+    <section class="game-panel">
+      <div class="section-heading">
+        <div><span class="eyebrow">اختار التحدي</span><h2>جهّز نفسك للمباراة</h2></div>
+        <span class="question-pool"><i></i> بنك الأسئلة جاهز</span>
+      </div>
+      <div class="setup-grid">
+        <div class="control-block">
+          <label>نوع الأسئلة</label>
+          <div class="choice-row" id="category-choices">
+            <button class="choice active" data-category="all">كل الأنواع</button>
+            <button class="choice" data-category="guess">خمن اللاعب</button>
+            <button class="choice" data-category="transfer">الانتقالات</button>
+            <button class="choice" data-category="general">معلومات عامة</button>
+          </div>
+        </div>
+        <div class="control-block">
+          <label>مستوى الصعوبة</label>
+          <div class="choice-row difficulty-row" id="difficulty-choices">
+            <button class="choice active" data-level="all"><span class="level-dot all-dot"></span> الكل</button>
+            <button class="choice" data-level="easy"><span class="level-dot easy-dot"></span> سهل</button>
+            <button class="choice" data-level="medium"><span class="level-dot medium-dot"></span> متوسط</button>
+            <button class="choice" data-level="hard"><span class="level-dot hard-dot"></span> صعب</button>
+          </div>
+        </div>
+        <div class="control-block round-control">
+          <label for="round-size">عدد الأسئلة في الجولة</label>
+          <select id="round-size"><option value="10">10 أسئلة</option><option value="15">15 سؤالًا</option><option value="20">20 سؤالًا</option><option value="all">كل الأسئلة المتاحة</option></select>
+        </div>
+      </div>
+      <div class="start-row">
+        <p>كل إجابة صحيحة = <b>100 نقطة</b>، والتحدي ضد الوقت!</p>
+        <button class="primary-btn" id="start-btn">ابدأ اللعب <span>←</span></button>
+      </div>
+    </section>
+
+    <section class="quiz-panel hidden" id="quiz-panel">
+      <div class="quiz-top">
+        <div class="quiz-category"><span class="category-icon">⚽</span><span id="category-name">تخمين اللاعب</span></div>
+        <div class="quiz-progress-text"><span id="question-number">1</span> / <span id="question-total">10</span></div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="quiz-meta"><span id="level-label" class="level-pill">سهل</span><span class="timer"><span>⏱</span> <b id="timer">20</b> ثانية</span></div>
+      <div class="question-card">
+        <div class="question-mark">؟</div>
+        <h2 id="question-text">السؤال يظهر هنا</h2>
+        <div class="answers-grid" id="answers-grid"></div>
+        <div class="feedback hidden" id="feedback"></div>
+      </div>
+      <div class="quiz-footer"><span class="score-label">نقاطك <b id="score">0</b></span><button class="next-btn" id="next-btn" disabled>السؤال التالي ←</button></div>
+    </section>
+
+    <section class="result-panel hidden" id="result-panel">
+      <div class="result-medal" id="result-medal">🏆</div>
+      <span class="eyebrow">انتهى التحدي</span><h2 id="result-title">أداء رائع!</h2>
+      <p id="result-message">أحسنت، استمر في التحدي.</p>
+      <div class="result-stats">
+        <div><strong id="final-score">0</strong><small>النقاط</small></div>
+        <div><strong id="correct-count">0</strong><small>إجابات صحيحة</small></div>
+        <div><strong id="accuracy">0%</strong><small>نسبة النجاح</small></div>
+      </div>
+      <button class="primary-btn" id="play-again">العب مرة أخرى <span>↻</span></button>
+    </section>
+    <footer><span>⚽ صُنع لعشّاق كرة القدم</span><span>FOOTBALL • PASSION • GLORY</span></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
