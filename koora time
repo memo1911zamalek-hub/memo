@@ -1,0 +1,565 @@
+:root{
+  --night:#04140e; --pitch:#0e5a3f; --pitch2:#0b4a34; --chalk:#f4f7f2;
+  --gold:#ffd23f; --red:#e63946; --ok:#2ecc71; --glass:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Tajawal',Tahoma,Arial,sans-serif; color:var(--chalk);
+  background:linear-gradient(#020b08,var(--night) 55%,#0a2a1e);
+  overflow-x:hidden; display:flex; justify-content:center;
+}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+/* أضواء الملعب */
+.lights{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(ellipse 30% 40% at 12% 0%,rgba(255,240,170,.28),transparent 70%),
+   radial-gradient(ellipse 30% 40% at 88% 0%,rgba(255,240,170,.28),transparent 70%)}
+
+/* أرضية ملعب ثلاثية الأبعاد */
+.field{position:fixed;left:-30%;right:-30%;bottom:0;height:55vh;z-index:0;
+  transform:perspective(520px) rotateX(64deg);transform-origin:50% 100%;
+  background:
+   radial-gradient(circle at 50% 50%,transparent 0 17%,rgba(255,255,255,.55) 17% 18%,transparent 18%),
+   linear-gradient(rgba(255,255,255,.5) 0 0) 50% 50%/4px 100% no-repeat,
+   repeating-linear-gradient(90deg,var(--pitch) 0 70px,var(--pitch2) 70px 140px);
+  animation:slide 14s linear infinite;
+  box-shadow:inset 0 80px 120px var(--night)}
+@keyframes slide{to{background-position:0 0,50% 50%,140px 0}}
+
+#app{position:relative;z-index:2;width:100%;max-width:660px;padding:22px 16px 40px;
+  display:flex;align-items:center;min-height:100vh}
+.screen{display:none;width:100%;text-align:center}
+.screen.show{display:block;animation:enter .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes enter{from{opacity:0;transform:perspective(800px) rotateX(18deg) translateY(30px)}}
+
+h1{font-size:clamp(2rem,7vw,3rem);font-weight:900;letter-spacing:.5px;
+  text-shadow:0 4px 0 #063a28,0 10px 30px rgba(0,0,0,.6)}
+h3{margin:22px 0 10px;font-size:1rem;opacity:.85;font-weight:700}
+.sub{opacity:.8;margin-top:6px}
+.meta{margin-top:12px;font-size:.9rem;opacity:.7}
+
+/* كرة ثلاثية الأبعاد */
+.ball-wrap{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;margin-bottom:10px}
+.ball{width:96px;height:96px;border-radius:50%;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 32% 28%,#fff 0,#e9e9e9 40%,#8a8a8a 100%);
+  box-shadow:inset -14px -16px 26px rgba(0,0,0,.5),0 0 40px rgba(255,255,255,.15);
+  animation:bounce 1.5s cubic-bezier(.4,0,.6,1) infinite}
+.ball::before{content:"";position:absolute;inset:-20%;
+  background:
+   radial-gradient(circle,#111 0 11px,transparent 12px) 0 0/48px 48px,
+   radial-gradient(circle,#111 0 11px,transparent 12px) 24px 24px/48px 48px;
+  filter:blur(.4px);animation:roll 5s linear infinite;border-radius:50%}
+.ball::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 35%),
+             radial-gradient(circle at 70% 80%,rgba(0,0,0,.45),transparent 55%)}
+.shadow{width:80px;height:12px;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(4px);
+  animation:shadow 1.5s cubic-bezier(.4,0,.6,1) infinite;margin-top:6px}
+@keyframes bounce{0%,100%{transform:translateY(0) scale(1.05,.95)}50%{transform:translateY(-38px) scale(.98,1.03)}}
+@keyframes shadow{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(.6);opacity:.3}}
+@keyframes roll{to{transform:translate(48px,24px)}}
+
+/* أزرار */
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chip{font:inherit;font-weight:700;color:var(--chalk);background:var(--glass);border:2px solid rgba(255,255,255,.18);
+  padding:9px 18px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px);transition:transform .15s,background .15s}
+.chip:hover{transform:translateY(-2px)}
+.chip.on{background:var(--gold);color:#1b1500;border-color:var(--gold);box-shadow:0 0 22px rgba(255,210,63,.45)}
+.btn{font:inherit;font-weight:900;font-size:1.15rem;border:0;cursor:pointer;border-radius:16px;
+  padding:14px 34px;margin-top:26px;color:#1b1500;background:var(--gold);
+  box-shadow:0 7px 0 #b8901a,0 14px 24px rgba(0,0,0,.4);transition:transform .1s,box-shadow .1s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(6px);box-shadow:0 1px 0 #b8901a,0 4px 10px rgba(0,0,0,.4)}
+.btn.ghost{background:transparent;color:var(--chalk);border:2px solid rgba(255,255,255,.3);box-shadow:none;margin:14px 6px 0}
+.btn.main{min-width:220px}
+
+/* لوحة النتائج */
+.hud{display:flex;gap:10px;justify-content:space-between;margin-bottom:12px}
+.stat{flex:1;background:var(--glass);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:8px;
+  backdrop-filter:blur(6px);transform:perspective(500px) rotateX(12deg)}
+.stat b{display:block;font-size:1.5rem;color:var(--gold)}
+.stat span{font-size:.8rem;opacity:.75}
+.timer{height:10px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ok),var(--gold),var(--red));
+  background-size:300% 100%;transition:width .25s linear}
+
+/* بطاقة السؤال ثلاثية الأبعاد */
+.card3d{background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.22);border-radius:24px;padding:24px 20px;backdrop-filter:blur(10px);
+  box-shadow:0 30px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3);
+  transform-style:preserve-3d;transition:transform .15s ease-out;will-change:transform}
+.card3d.flip{animation:flip .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{transform:perspective(900px) rotateY(-90deg);opacity:0}}
+.card3d.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.tag{display:inline-block;font-size:.8rem;font-weight:700;padding:4px 14px;border-radius:99px;background:var(--red);transform:translateZ(30px)}
+.tag.l1{background:#2a9d62}.tag.l2{background:#d98a14}.tag.l3{background:var(--red)}
+#question{font-size:clamp(1.15rem,4.5vw,1.6rem);margin:16px 0;line-height:1.7;transform:translateZ(40px)}
+.clues{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.clue{background:rgba(0,0,0,.3);border-right:4px solid var(--gold);padding:9px 12px;border-radius:10px;text-align:right;animation:enter .4s}
+.tools{display:flex;gap:10px;justify-content:center;margin:6px 0 14px}
+.tool{font:inherit;font-size:.9rem;font-weight:700;color:var(--chalk);background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.25);padding:6px 14px;border-radius:10px;cursor:pointer}
+.tool:disabled{opacity:.35;cursor:not-allowed}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{font:inherit;font-weight:700;font-size:1.05rem;color:#06241a;background:var(--chalk);border:0;cursor:pointer;
+  padding:15px 10px;border-radius:14px;box-shadow:0 6px 0 #a9b5ac,0 10px 16px rgba(0,0,0,.35);
+  transition:transform .1s,box-shadow .1s,background .2s;transform:translateZ(25px)}
+.opt:hover:not(:disabled){transform:translateY(-3px) translateZ(25px)}
+.opt:active:not(:disabled){transform:translateY(5px);box-shadow:0 1px 0 #a9b5ac}
+.opt.right{background:var(--ok);color:#fff;box-shadow:0 6px 0 #1b8f4c,0 0 30px rgba(46,204,113,.7)}
+.opt.wrong{background:var(--red);color:#fff;box-shadow:0 6px 0 #a3202b}
+.opt.gone{visibility:hidden}
+.opt:disabled{cursor:default}
+.next{display:none;margin-top:20px}
+.next.show{display:inline-block}
+
+/* النهاية */
+.trophy{font-size:5.5rem;animation:spin3d 3s ease-in-out infinite;filter:drop-shadow(0 12px 18px rgba(0,0,0,.6))}
+@keyframes spin3d{0%,100%{transform:perspective(500px) rotateY(-35deg)}50%{transform:perspective(500px) rotateY(35deg)}}
+.big{font-size:3rem;font-weight:900;color:var(--gold);margin:8px 0}
+
+@media(max-width:480px){.opts{grid-template-columns:1fr}.btn.ghost{display:block;margin:12px auto 0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}(() => {
+const $ = s => document.querySelector(s);
+const ROUND = 10, LEVEL_NAMES = {1:'سهل',2:'متوسط',3:'صعب'};
+const CAT_NAMES = {guess:'خمّن اللاعب',transfer:'انتقالات',general:'أسئلة عامة'};
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = (pool, ...ex) => shuffle([...new Set(pool)].filter(x => !ex.includes(x))).slice(0, 3);
+
+/* ---------- بناء بنك الأسئلة ---------- */
+const NAMES = PLAYERS.map(p => p[0]);
+const NATS = PLAYERS.map(p => p[2]);
+const CLUBS = TRANSFERS.flatMap(t => [t[1], t[2]]);
+const BANK = [];
+PLAYERS.forEach(([n, pos, nat, clubs, l]) => {
+  BANK.push({c:'guess', l, q:'من هو اللاعب صاحب هذه المسيرة؟', clues:[`الأندية: ${clubs}`, `المركز: ${pos}`, `الجنسية: ${nat}`], a:n, o:pick(NAMES, n)});
+  BANK.push({c:'general', l, q:`ما جنسية اللاعب ${n}؟`, a:nat, o:pick(NATS, nat)});
+});
+TRANSFERS.forEach(([p, f, t, y, l]) => BANK.push({c:'transfer', l, q:`إلى أي نادٍ انتقل ${p} من ${f} عام ${y}؟`, a:t, o:pick(CLUBS, t, f)}));
+GENERAL.forEach(([q, a, x, y, z, l]) => BANK.push({c:'general', l, q, a, o:[x, y, z]}));
+
+/* ---------- الحالة ---------- */
+let cat = 'all', lvl = 0, Q = [], idx = 0, score = 0, streak = 0, right = 0;
+let hints = 0, left = 0, total = 20, timer = null, locked = true, fiftyUsed = false;
+
+const store = {
+  get(){ try { return +localStorage.getItem('fq_best') || 0; } catch(e){ return 0; } },
+  set(v){ try { localStorage.setItem('fq_best', v); } catch(e){} }
+};
+const show = id => { document.querySelectorAll('.screen').forEach(s => s.classList.remove('show')); $(id).classList.add('show'); };
+const pool = () => BANK.filter(q => (cat === 'all' || q.c === cat) && (!lvl || q.l === lvl));
+
+/* ---------- الصوت ---------- */
+let AC;
+function tone(f, d = .15, type = 'sine', delay = 0) {
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + delay;
+    o.type = type; o.frequency.value = f; g.gain.setValueAtTime(.12, t); g.gain.exponentialRampToValueAtTime(.001, t + d);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d);
+  } catch(e){}
+}
+const sfx = {ok(){ tone(660,.12); tone(880,.2,'sine',.1); tone(1180,.25,'sine',.22); }, no(){ tone(200,.3,'sawtooth'); }, tick(){ tone(520,.05,'square'); }};
+
+/* ---------- قصاصات ملونة ---------- */
+const cv = $('#fx'), cx = cv.getContext('2d'); let parts = [], raf = 0;
+const resize = () => { cv.width = innerWidth; cv.height = innerHeight; };
+addEventListener('resize', resize); resize();
+function confetti(n = 110) {
+  const cols = ['#ffd23f', '#2ecc71', '#fff', '#e63946', '#4cc9f0'];
+  for (let i = 0; i < n; i++) parts.push({x:cv.width / 2, y:cv.height * .55, vx:(Math.random() - .5) * 16, vy:-Math.random() * 16 - 4, s:Math.random() * 8 + 4, r:Math.random() * 6, vr:Math.random() * .3, c:cols[i % 5], life:100 + Math.random() * 60});
+  if (!raf) loop();
+}
+function loop() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  parts = parts.filter(p => p.life-- > 0);
+  parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .35; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.min(1, p.life / 30); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); cx.restore(); });
+  raf = parts.length ? requestAnimationFrame(loop) : 0;
+}
+
+/* ---------- ميلان البطاقة ثلاثي الأبعاد مع الماوس ---------- */
+const card = $('#card');
+card.addEventListener('pointermove', e => {
+  if (e.pointerType === 'touch') return;
+  const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+  card.style.transform = `perspective(900px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
+});
+card.addEventListener('pointerleave', () => card.style.transform = '');
+
+/* ---------- القائمة ---------- */
+function refreshMenu() {
+  $('#count').textContent = `عدد الأسئلة المتاحة: ${pool().length} من ${BANK.length}`;
+  const b = store.get(); $('#bestMenu').textContent = b ? `أفضل نتيجة: ${b} نقطة` : '';
+}
+function chips(id, fn) {
+  $(id).addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $(id).querySelectorAll('.chip').forEach(c => c.classList.remove('on')); b.classList.add('on'); fn(b.dataset.v); refreshMenu();
+  });
+}
+chips('#cats', v => cat = v);
+chips('#lvls', v => lvl = +v);
+
+/* ---------- اللعب ---------- */
+function start() {
+  Q = shuffle(pool()).slice(0, ROUND); idx = score = streak = right = 0;
+  $('#sScore').textContent = 0; $('#sStreak').textContent = 0;
+  show('#game'); render();
+}
+function render() {
+  const q = Q[idx]; locked = false; hints = 0; fiftyUsed = false;
+  total = left = q.c === 'guess' ? 30 : 20;
+  $('#sQ').textContent = `${idx + 1}/${Q.length}`;
+  const tag = $('#tag'); tag.textContent = `${CAT_NAMES[q.c]} • ${LEVEL_NAMES[q.l]}`; tag.className = 'tag l' + q.l;
+  $('#question').textContent = q.q;
+  const cl = $('#clues'); cl.innerHTML = '';
+  if (q.clues) addClue(q.clues[0]);
+  $('#hintBtn').style.display = q.clues ? '' : 'none'; $('#hintBtn').disabled = false;
+  $('#fiftyBtn').disabled = false; $('#next').classList.remove('show');
+  const o = $('#opts'); o.innerHTML = '';
+  shuffle([q.a, ...q.o]).forEach(v => { const b = document.createElement('button'); b.className = 'opt'; b.textContent = v; b.onclick = () => answer(b, v); o.appendChild(b); });
+  card.classList.remove('flip', 'shake'); void card.offsetWidth; card.classList.add('flip');
+  clearInterval(timer); updBar();
+  timer = setInterval(() => { left--; updBar(); if (left <= 5 && left > 0) sfx.tick(); if (left <= 0) answer(null, null); }, 1000);
+}
+const addClue = t => { const d = document.createElement('div'); d.className = 'clue'; d.textContent = t; $('#clues').appendChild(d); };
+const updBar = () => $('#bar').style.width = Math.max(0, left / total * 100) + '%';
+
+$('#hintBtn').onclick = () => {
+  const q = Q[idx]; if (locked || hints >= 2) return;
+  hints++; addClue(q.clues[hints]); if (hints >= 2) $('#hintBtn').disabled = true;
+};
+$('#fiftyBtn').onclick = () => {
+  if (locked || fiftyUsed) return; fiftyUsed = true; $('#fiftyBtn').disabled = true;
+  const q = Q[idx];
+  shuffle([...document.querySelectorAll('.opt')].filter(b => b.textContent !== q.a)).slice(0, 2).forEach(b => b.classList.add('gone'));
+};
+
+function answer(btn, val) {
+  if (locked) return; locked = true; clearInterval(timer);
+  const q = Q[idx], ok = val === q.a;
+  document.querySelectorAll('.opt').forEach(b => { b.disabled = true; if (b.textContent === q.a) b.classList.add('right'); });
+  if (ok) {
+    const pts = Math.max(5, q.l * 10 + Math.ceil(left / 2) - hints * 4 - (fiftyUsed ? 3 : 0));
+    score += pts; streak++; right++; if (streak >= 3) score += 5;
+    sfx.ok(); confetti(streak >= 3 ? 220 : 110);
+  } else {
+    if (btn) btn.classList.add('wrong'); streak = 0; sfx.no();
+    card.classList.remove('flip'); void card.offsetWidth; card.classList.add('shake');
+  }
+  $('#sScore').textContent = score; $('#sStreak').textContent = streak;
+  const n = $('#next'); n.textContent = idx === Q.length - 1 ? 'عرض النتيجة' : 'السؤال التالي'; n.classList.add('show');
+}
+$('#next').onclick = () => { idx++; idx < Q.length ? render() : finish(); };
+
+function finish() {
+  clearInterval(timer);
+  const pct = right / Q.length;
+  const title = pct === 1 ? 'مباراة مثالية! أنت أسطورة' : pct >= .8 ? 'أداء عالمي' : pct >= .5 ? 'لاعب أساسي' : pct >= .3 ? 'لاعب احتياطي' : 'تحتاج مزيداً من التدريب';
+  $('#endTitle').textContent = title; $('#endScore').textContent = `${score} نقطة`;
+  $('#endInfo').textContent = `أجبت على ${right} من ${Q.length} إجابة صحيحة`;
+  const b = store.get(), nb = score > b;
+  if (nb) store.set(score);
+  $('#bestEnd').textContent = nb ? 'رقم قياسي جديد!' : `أفضل نتيجة: ${b} نقطة`;
+  show('#end'); if (pct >= .5) { confetti(250); setTimeout(() => confetti(150), 500); }
+}
+
+$('#start').onclick = start;
+$('#again').onclick = start;
+$('#home').onclick = () => { refreshMenu(); show('#menu'); };
+refreshMenu();
+})();// المستويات: 1 = سهل، 2 = متوسط، 3 = صعب
+
+// [الاسم، المركز، الجنسية، الأندية، المستوى]
+const PLAYERS = [
+["ليونيل ميسي","مهاجم","الأرجنتين","برشلونة، باريس سان جيرمان، إنتر ميامي",1],
+["كريستيانو رونالدو","مهاجم","البرتغال","سبورتنغ لشبونة، مانشستر يونايتد، ريال مدريد، يوفنتوس، النصر",1],
+["نيمار","مهاجم","البرازيل","سانتوس، برشلونة، باريس سان جيرمان، الهلال",1],
+["كيليان مبابي","مهاجم","فرنسا","موناكو، باريس سان جيرمان، ريال مدريد",1],
+["محمد صلاح","جناح","مصر","بازل، تشيلسي، روما، ليفربول",1],
+["إيرلينغ هالاند","مهاجم","النرويج","مولده، ريد بول سالزبورغ، بوروسيا دورتموند، مانشستر سيتي",1],
+["كريم بنزيما","مهاجم","فرنسا","ليون، ريال مدريد، الاتحاد",1],
+["زلاتان إبراهيموفيتش","مهاجم","السويد","مالمو، أياكس، يوفنتوس، برشلونة، ميلان، مانشستر يونايتد",1],
+["رونالدينيو","صانع ألعاب","البرازيل","غريميو، باريس سان جيرمان، برشلونة، ميلان",1],
+["ديفيد بيكهام","وسط","إنجلترا","مانشستر يونايتد، ريال مدريد، ميلان، باريس سان جيرمان",1],
+["هاري كين","مهاجم","إنجلترا","توتنهام، بايرن ميونخ",1],
+["فينيسيوس جونيور","جناح","البرازيل","فلامنغو، ريال مدريد",1],
+["جود بيلينغهام","وسط","إنجلترا","برمنغهام، بوروسيا دورتموند، ريال مدريد",1],
+["لامين يامال","جناح","إسبانيا","برشلونة",1],
+["لوكا مودريتش","وسط","كرواتيا","دينامو زغرب، توتنهام، ريال مدريد، ميلان",1],
+["زين الدين زيدان","وسط","فرنسا","كان، بوردو، يوفنتوس، ريال مدريد",2],
+["واين روني","مهاجم","إنجلترا","إيفرتون، مانشستر يونايتد، ديربي كاونتي",2],
+["سيرجيو راموس","مدافع","إسبانيا","إشبيلية، ريال مدريد، باريس سان جيرمان",2],
+["أندريس إنييستا","وسط","إسبانيا","برشلونة، فيسل كوبي",2],
+["تشافي هيرنانديز","وسط","إسبانيا","برشلونة، السد",2],
+["جيانلويجي بوفون","حارس مرمى","إيطاليا","بارما، يوفنتوس، باريس سان جيرمان",2],
+["مانويل نوير","حارس مرمى","ألمانيا","شالكه، بايرن ميونخ",2],
+["كيفين دي بروين","وسط","بلجيكا","جنك، تشيلسي، فولفسبورغ، مانشستر سيتي، نابولي",2],
+["سون هيونغ مين","جناح","كوريا الجنوبية","هامبورغ، باير ليفركوزن، توتنهام، لوس أنجلوس إف سي",2],
+["ساديو ماني","جناح","السنغال","ميتز، ريد بول سالزبورغ، ساوثهامبتون، ليفربول، بايرن ميونخ، النصر",2],
+["روبرت ليفاندوفسكي","مهاجم","بولندا","ليخ بوزنان، بوروسيا دورتموند، بايرن ميونخ، برشلونة",2],
+["أنطوان غريزمان","مهاجم","فرنسا","ريال سوسيداد، أتلتيكو مدريد، برشلونة",2],
+["لويس سواريز","مهاجم","الأوروغواي","ناسيونال، أياكس، ليفربول، برشلونة، أتلتيكو مدريد، إنتر ميامي",2],
+["ديدييه دروغبا","مهاجم","ساحل العاج","مارسيليا، تشيلسي، غلطة سراي، مونتريال إمباكت",2],
+["صامويل إيتو","مهاجم","الكاميرون","ريال مدريد، مايوركا، برشلونة، إنتر ميلان، تشيلسي",2],
+["ياسين بونو","حارس مرمى","المغرب","أتلتيكو مدريد، سرقسطة، جيرونا، إشبيلية، الهلال",2],
+["أشرف حكيمي","مدافع","المغرب","ريال مدريد، بوروسيا دورتموند، إنتر ميلان، باريس سان جيرمان",2],
+["رياض محرز","جناح","الجزائر","لوهافر، ليستر سيتي، مانشستر سيتي، الأهلي السعودي",2],
+["فيرجيل فان دايك","مدافع","هولندا","غرونينغن، سيلتيك، ساوثهامبتون، ليفربول",2],
+["رودري","وسط","إسبانيا","فياريال، أتلتيكو مدريد، مانشستر سيتي",2],
+["دييغو مارادونا","صانع ألعاب","الأرجنتين","بوكا جونيورز، برشلونة، نابولي، إشبيلية",2],
+["بيليه","مهاجم","البرازيل","سانتوس، نيويورك كوزموس",2],
+["رونالدو نازاريو","مهاجم","البرازيل","كروزيرو، آيندهوفن، برشلونة، إنتر ميلان، ريال مدريد، ميلان",2],
+["تييري هنري","مهاجم","فرنسا","موناكو، يوفنتوس، أرسنال، برشلونة، نيويورك ريد بولز",2],
+["ستيفن جيرارد","وسط","إنجلترا","ليفربول، لوس أنجلوس غالاكسي",2],
+["كاكا","وسط","البرازيل","ساو باولو، ميلان، ريال مدريد، أورلاندو سيتي",2],
+["غاريث بيل","جناح","ويلز","ساوثهامبتون، توتنهام، ريال مدريد، لوس أنجلوس إف سي",2],
+["إدين هازارد","جناح","بلجيكا","ليل، تشيلسي، ريال مدريد",2],
+["بول بوغبا","وسط","فرنسا","مانشستر يونايتد، يوفنتوس، موناكو",2],
+["أليسون بيكر","حارس مرمى","البرازيل","إنترناسيونال، روما، ليفربول",2],
+["تيبو كورتوا","حارس مرمى","بلجيكا","جنك، تشيلسي، أتلتيكو مدريد، ريال مدريد",2],
+["سالم الدوسري","جناح","السعودية","الهلال، فياريال (إعارة)",2],
+["يوهان كرويف","مهاجم","هولندا","أياكس، برشلونة، فينورد",3],
+["باولو مالديني","مدافع","إيطاليا","ميلان",3],
+["فرانك لامبارد","وسط","إنجلترا","وست هام، تشيلسي، مانشستر سيتي، نيويورك سيتي",3],
+["أندريا بيرلو","وسط","إيطاليا","بريشيا، إنتر ميلان، ميلان، يوفنتوس، نيويورك سيتي",3],
+["إيكر كاسياس","حارس مرمى","إسبانيا","ريال مدريد، بورتو",3],
+["أريين روبن","جناح","هولندا","غرونينغن، آيندهوفن، تشيلسي، ريال مدريد، بايرن ميونخ",3],
+["فيرناندو توريس","مهاجم","إسبانيا","أتلتيكو مدريد، ليفربول، تشيلسي، ميلان",3],
+["روود فان نيستلروي","مهاجم","هولندا","آيندهوفن، مانشستر يونايتد، ريال مدريد، هامبورغ",3],
+["إدوين فان در سار","حارس مرمى","هولندا","أياكس، يوفنتوس، فولهام، مانشستر يونايتد",3],
+["جيمس رودريغيز","وسط","كولومبيا","بورتو، موناكو، ريال مدريد، بايرن ميونخ، إيفرتون، الريان",3],
+["بيير إيميريك أوباميانغ","مهاجم","الغابون","سانت إتيان، بوروسيا دورتموند، أرسنال، برشلونة، تشيلسي، مارسيليا",3],
+["ميشيل بلاتيني","وسط","فرنسا","ناني، سانت إتيان، يوفنتوس",3],
+["ريان غيغز","جناح","ويلز","مانشستر يونايتد",3]
+];
+
+// [اللاعب، من، إلى، السنة، المستوى]
+const TRANSFERS = [
+["نيمار","برشلونة","باريس سان جيرمان",2017,1],
+["كريستيانو رونالدو","مانشستر يونايتد","ريال مدريد",2009,1],
+["كريستيانو رونالدو","ريال مدريد","يوفنتوس",2018,1],
+["كريستيانو رونالدو","يوفنتوس","مانشستر يونايتد",2021,1],
+["كريستيانو رونالدو","مانشستر يونايتد","النصر",2023,1],
+["ليونيل ميسي","برشلونة","باريس سان جيرمان",2021,1],
+["ليونيل ميسي","باريس سان جيرمان","إنتر ميامي",2023,1],
+["كيليان مبابي","باريس سان جيرمان","ريال مدريد",2024,1],
+["إيرلينغ هالاند","بوروسيا دورتموند","مانشستر سيتي",2022,1],
+["محمد صلاح","روما","ليفربول",2017,1],
+["كريم بنزيما","ريال مدريد","الاتحاد",2023,1],
+["هاري كين","توتنهام","بايرن ميونخ",2023,1],
+["نيمار","باريس سان جيرمان","الهلال",2023,1],
+["جود بيلينغهام","بوروسيا دورتموند","ريال مدريد",2023,1],
+["روبرت ليفاندوفسكي","بايرن ميونخ","برشلونة",2022,2],
+["بول بوغبا","يوفنتوس","مانشستر يونايتد",2016,2],
+["غاريث بيل","توتنهام","ريال مدريد",2013,2],
+["زين الدين زيدان","يوفنتوس","ريال مدريد",2001,2],
+["رونالدينيو","باريس سان جيرمان","برشلونة",2003,2],
+["زلاتان إبراهيموفيتش","إنتر ميلان","برشلونة",2009,2],
+["ديفيد بيكهام","مانشستر يونايتد","ريال مدريد",2003,2],
+["كاكا","ميلان","ريال مدريد",2009,2],
+["تييري هنري","أرسنال","برشلونة",2007,2],
+["لويس سواريز","ليفربول","برشلونة",2014,2],
+["كيفين دي بروين","فولفسبورغ","مانشستر سيتي",2015,2],
+["ساديو ماني","ليفربول","بايرن ميونخ",2022,2],
+["ساديو ماني","بايرن ميونخ","النصر",2023,2],
+["أنطوان غريزمان","أتلتيكو مدريد","برشلونة",2019,2],
+["فيرجيل فان دايك","ساوثهامبتون","ليفربول",2018,2],
+["فينيسيوس جونيور","فلامنغو","ريال مدريد",2018,2],
+["فيليبي كوتينيو","ليفربول","برشلونة",2018,2],
+["إدين هازارد","تشيلسي","ريال مدريد",2019,2],
+["رياض محرز","ليستر سيتي","مانشستر سيتي",2018,2],
+["رياض محرز","مانشستر سيتي","الأهلي السعودي",2023,2],
+["ياسين بونو","إشبيلية","الهلال",2023,2],
+["نغولو كانتي","تشيلسي","الاتحاد",2023,2],
+["نيمار","سانتوس","برشلونة",2013,2],
+["روميلو لوكاكو","مانشستر يونايتد","إنتر ميلان",2019,2],
+["روميلو لوكاكو","إنتر ميلان","تشيلسي",2021,2],
+["أليسون بيكر","روما","ليفربول",2018,2],
+["تيبو كورتوا","تشيلسي","ريال مدريد",2018,2],
+["لوكا مودريتش","توتنهام","ريال مدريد",2012,2],
+["كريستيانو رونالدو","سبورتنغ لشبونة","مانشستر يونايتد",2003,2],
+["برونو فرنانديز","سبورتنغ لشبونة","مانشستر يونايتد",2020,2],
+["ديكلان رايس","وست هام","أرسنال",2023,2],
+["كاسيميرو","ريال مدريد","مانشستر يونايتد",2022,2],
+["عثمان ديمبيلي","برشلونة","باريس سان جيرمان",2023,2],
+["سون هيونغ مين","توتنهام","لوس أنجلوس إف سي",2025,2],
+["ألكسندر إيزاك","نيوكاسل","ليفربول",2025,2],
+["فلوريان فيرتز","باير ليفركوزن","ليفربول",2025,2],
+["لويس دياز","ليفربول","بايرن ميونخ",2025,2],
+["ترنت ألكسندر أرنولد","ليفربول","ريال مدريد",2025,2],
+["روبرت ليفاندوفسكي","بوروسيا دورتموند","بايرن ميونخ",2014,3],
+["جيمس رودريغيز","موناكو","ريال مدريد",2014,3],
+["روبرتو فيرمينو","ليفربول","الأهلي السعودي",2023,3],
+["بيير إيميريك أوباميانغ","أرسنال","برشلونة",2022,3],
+["واين روني","مانشستر يونايتد","إيفرتون",2017,3],
+["واين روني","إيفرتون","مانشستر يونايتد",2004,3],
+["رونالدو نازاريو","برشلونة","إنتر ميلان",1997,3],
+["رونالدو نازاريو","إنتر ميلان","ريال مدريد",2002,3],
+["لويس فيغو","برشلونة","ريال مدريد",2000,3],
+["دييغو مارادونا","برشلونة","نابولي",1984,3],
+["داني ألفيس","برشلونة","يوفنتوس",2016,3],
+["سيرجيو راموس","إشبيلية","ريال مدريد",2005,3],
+["ماتياس دي ليخت","أياكس","يوفنتوس",2019,3],
+["سون هيونغ مين","باير ليفركوزن","توتنهام",2015,3],
+["رافينيا","ليدز يونايتد","برشلونة",2022,3],
+["إيرلينغ هالاند","ريد بول سالزبورغ","بوروسيا دورتموند",2020,3],
+["أشرف حكيمي","ريال مدريد","إنتر ميلان",2020,3],
+["أشرف حكيمي","إنتر ميلان","باريس سان جيرمان",2021,3],
+["توني كروس","بايرن ميونخ","ريال مدريد",2014,3],
+["سيرجيو أغويرو","أتلتيكو مدريد","مانشستر سيتي",2011,3]
+];
+
+// [السؤال، الإجابة الصحيحة، خطأ1، خطأ2، خطأ3، المستوى]
+const GENERAL = [
+["كم عدد اللاعبين داخل الملعب لكل فريق؟","11","10","9","12",1],
+["من فاز بكأس العالم 2022؟","الأرجنتين","فرنسا","البرازيل","كرواتيا",1],
+["أين أقيم كأس العالم 2022؟","قطر","روسيا","البرازيل","ألمانيا",1],
+["كم مدة المباراة الرسمية بدون وقت إضافي؟","90 دقيقة","80 دقيقة","100 دقيقة","120 دقيقة",1],
+["من فاز بكأس العالم 2014؟","ألمانيا","الأرجنتين","البرازيل","هولندا",1],
+["أكثر منتخب فوزاً بكأس العالم؟","البرازيل","ألمانيا","إيطاليا","الأرجنتين",1],
+["أي نادٍ يُلقّب بالملكي؟","ريال مدريد","برشلونة","ميلان","ليفربول",1],
+["ماذا تعني البطاقة الحمراء؟","الطرد","إنذار","ركلة جزاء","تبديل",1],
+["أي لاعب يُلقّب بالبرغوث؟","ميسي","نيمار","رونالدو","مبابي",1],
+["أين أقيم كأس العالم 2018؟","روسيا","البرازيل","قطر","فرنسا",1],
+["ما اسم ملعب برشلونة؟","كامب نو","سانتياغو برنابيو","أنفيلد","أولد ترافورد",1],
+["ما اسم ملعب ريال مدريد؟","سانتياغو برنابيو","كامب نو","الاتحاد","سان سيرو",1],
+["ما اسم ملعب ليفربول؟","أنفيلد","أولد ترافورد","ستامفورد بريدج","الإمارات",1],
+["ما اسم ملعب مانشستر يونايتد؟","أولد ترافورد","أنفيلد","الاتحاد","وايت هارت لين",1],
+["من فاز بكأس أمم أفريقيا 2023 (أقيمت في 2024)؟","ساحل العاج","نيجيريا","مصر","السنغال",1],
+["من فاز ببطولة أمم أوروبا 2024؟","إسبانيا","إنجلترا","فرنسا","ألمانيا",1],
+["من فاز بكوبا أمريكا 2024؟","الأرجنتين","كولومبيا","البرازيل","الأوروغواي",1],
+["ما لون قميص منتخب البرازيل الأساسي؟","الأصفر","الأزرق","الأخضر","الأحمر",1],
+["من فاز بالكرة الذهبية 2024؟","رودري","فينيسيوس","بيلينغهام","مبابي",1],
+["ماذا نسمّي تسجيل اللاعب ثلاثة أهداف في مباراة؟","هاتريك","دبل","بوكر","سوبر",1],
+["من اللاعب الوحيد المسموح له لمس الكرة بيده داخل منطقة الجزاء؟","حارس المرمى","المدافع","المهاجم","قائد الفريق",1],
+["في أي دوري يلعب نادي إنتر ميلان؟","الإيطالي","الإسباني","الألماني","الفرنسي",1],
+["في أي دوري يلعب نادي بوروسيا دورتموند؟","الألماني","الهولندي","النمساوي","السويسري",1],
+["أي لاعب فاز بأكبر عدد من الكرات الذهبية؟","ميسي","رونالدو","بلاتيني","كرويف",2],
+["كم كرة ذهبية فاز بها ميسي؟","8","7","6","9",2],
+["من فاز بالكرة الذهبية 2025؟","عثمان ديمبيلي","لامين يامال","رودري","محمد صلاح",2],
+["أي نادٍ فاز بأكبر عدد من ألقاب دوري أبطال أوروبا؟","ريال مدريد","ميلان","ليفربول","بايرن ميونخ",2],
+["من فاز بدوري أبطال أوروبا 2025؟","باريس سان جيرمان","إنتر ميلان","أرسنال","برشلونة",2],
+["من فاز بدوري أبطال أوروبا 2024؟","ريال مدريد","بوروسيا دورتموند","مانشستر سيتي","بايرن ميونخ",2],
+["من فاز بدوري أبطال أوروبا 2023؟","مانشستر سيتي","إنتر ميلان","ريال مدريد","تشيلسي",2],
+["من فاز بكأس العالم 2010؟","إسبانيا","هولندا","ألمانيا","الأوروغواي",2],
+["من فاز بكأس العالم 2006؟","إيطاليا","فرنسا","ألمانيا","البرتغال",2],
+["من فاز بكأس العالم 1998؟","فرنسا","البرازيل","إيطاليا","كرواتيا",2],
+["أين أقيم كأس العالم 2010؟","جنوب أفريقيا","ألمانيا","البرازيل","مصر",2],
+["أين أقيم كأس العالم 2014؟","البرازيل","روسيا","قطر","جنوب أفريقيا",2],
+["من يستضيف كأس العالم 2026؟","أمريكا وكندا والمكسيك","إسبانيا والبرتغال","السعودية","اليابان وكوريا",2],
+["من الهداف التاريخي لكأس العالم؟","ميروسلاف كلوزه","رونالدو نازاريو","ميسي","بيليه",2],
+["من الهداف التاريخي للدوري الإنجليزي الممتاز؟","آلان شيرر","واين روني","هاري كين","تييري هنري",2],
+["من الهداف التاريخي لدوري أبطال أوروبا؟","كريستيانو رونالدو","ميسي","ليفاندوفسكي","بنزيما",2],
+["أي نادٍ يُلقّب بالمدفعجية؟","أرسنال","تشيلسي","توتنهام","وست هام",2],
+["أي نادٍ يُلقّب بالسيدة العجوز؟","يوفنتوس","ميلان","إنتر","روما",2],
+["أي نادٍ يُلقّب بالبلوغرانا؟","برشلونة","ريال مدريد","فالنسيا","أتلتيكو مدريد",2],
+["أي نادٍ يُلقّب بالشياطين الحمر؟","مانشستر يونايتد","ليفربول","تشيلسي","مانشستر سيتي",2],
+["أي نادٍ سعودي يُلقّب بالزعيم؟","الهلال","النصر","الاتحاد","الأهلي",2],
+["من فاز بكأس العالم للأندية 2025؟","تشيلسي","باريس سان جيرمان","ريال مدريد","مانشستر سيتي",2],
+["من قاد برشلونة لثلاثية 2009 كمدرب؟","بيب غوارديولا","لويس إنريكي","جوزيه مورينيو","تشافي",2],
+["من مدرب ليفربول عندما فاز بالدوري الإنجليزي 2020؟","يورغن كلوب","بريندان رودجرز","أرني سلوت","جوزيه مورينيو",2],
+["من المدرب الذي قاد مانشستر يونايتد 26 عاماً؟","أليكس فيرغسون","أرسين فينغر","ديفيد مويز","لويس فان خال",2],
+["من فاز بأول كأس عالم عام 1930؟","الأوروغواي","الأرجنتين","البرازيل","إيطاليا",2],
+["من فاز بيورو 2016؟","البرتغال","فرنسا","ألمانيا","إيطاليا",2],
+["من فاز بيورو 2020 (أقيمت في 2021)؟","إيطاليا","إنجلترا","إسبانيا","فرنسا",2],
+["كم مرة فازت البرازيل بكأس العالم؟","5","4","6","3",2],
+["كم مرة فازت الأرجنتين بكأس العالم حتى 2022؟","3","2","4","1",2],
+["من سجل ثلاثية في نهائي كأس العالم 2022؟","كيليان مبابي","ميسي","أوليفييه جيرو","أنخل دي ماريا",2],
+["ما مسافة ركلة الجزاء تقريباً؟","11 متراً","9 أمتار","13 متراً","15 متراً",2],
+["من فاز بالحذاء الذهبي في كأس العالم 2022؟","كيليان مبابي","ميسي","جيرو","ألفاريز",2],
+["من أكثر لاعب تسجيلاً للأهداف دولياً؟","كريستيانو رونالدو","علي دائي","ميسي","سونيل تشيتري",2],
+["لأي نادٍ ملعب «الاتحاد»؟","مانشستر سيتي","مانشستر يونايتد","ليفربول","أرسنال",2],
+["لأي نادٍ ملعب «ستامفورد بريدج»؟","تشيلسي","توتنهام","أرسنال","وست هام",2],
+["في أي ملعب أقيم نهائي كأس العالم 2022؟","لوسيل","البيت","الجنوب","خليفة الدولي",2],
+["من فاز بكأس آسيا 2023 التي أقيمت في قطر؟","قطر","اليابان","الأردن","إيران",2],
+["في أي عام أقيمت أول بطولة لكأس العالم؟","1930","1934","1950","1926",3],
+["في أي عام تأسس الاتحاد الدولي (الفيفا)؟","1904","1900","1930","1920",3],
+["من فاز بالحذاء الذهبي في كأس العالم 2018؟","هاري كين","مبابي","لوكاكو","غريزمان",3],
+["لأي نادٍ ملعب «سيغنال إيدونا بارك»؟","بوروسيا دورتموند","بايرن ميونخ","شالكه","باير ليفركوزن",3],
+["لأي نادٍ ملعب «ميستايا»؟","فالنسيا","إشبيلية","فياريال","أتلتيك بلباو",3],
+["من سجل هدف «يد الله» في كأس العالم 1986؟","دييغو مارادونا","بيليه","ميسي","زيدان",3],<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدي كرة القدم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="lights"></div>
+<div class="field"></div>
+
+<main id="app">
+  <!-- القائمة الرئيسية -->
+  <section id="menu" class="screen show">
+    <div class="ball-wrap"><div class="ball"></div><div class="shadow"></div></div>
+    <h1>تحدي كرة القدم</h1>
+    <p class="sub">خمّن اللاعب، تتبّع الانتقالات، واختبر معلوماتك.</p>
+
+    <h3>القسم</h3>
+    <div class="chips" id="cats">
+      <button class="chip on" data-v="all">الكل</button>
+      <button class="chip" data-v="guess">خمّن اللاعب</button>
+      <button class="chip" data-v="transfer">الانتقالات</button>
+      <button class="chip" data-v="general">أسئلة عامة</button>
+    </div>
+
+    <h3>المستوى</h3>
+    <div class="chips" id="lvls">
+      <button class="chip on" data-v="0">مختلط</button>
+      <button class="chip" data-v="1">سهل</button>
+      <button class="chip" data-v="2">متوسط</button>
+      <button class="chip" data-v="3">صعب</button>
+    </div>
+
+    <button class="btn main" id="start">ابدأ المباراة</button>
+    <p class="meta" id="count"></p>
+    <p class="meta" id="bestMenu"></p>
+  </section>
+
+  <!-- شاشة اللعب -->
+  <section id="game" class="screen">
+    <div class="hud">
+      <div class="stat"><b id="sScore">0</b><span>النقاط</span></div>
+      <div class="stat"><b id="sQ">1/10</b><span>السؤال</span></div>
+      <div class="stat"><b id="sStreak">0</b><span>سلسلة الفوز</span></div>
+    </div>
+    <div class="timer"><i id="bar"></i></div>
+
+    <div class="card3d" id="card">
+      <span class="tag" id="tag"></span>
+      <h2 id="question"></h2>
+      <div class="clues" id="clues"></div>
+      <div class="tools">
+        <button class="tool" id="hintBtn">تلميح</button>
+        <button class="tool" id="fiftyBtn">حذف إجابتين</button>
+      </div>
+      <div class="opts" id="opts"></div>
+      <button class="btn next" id="next">السؤال التالي</button>
+    </div>
+  </section>
+
+  <!-- النتيجة -->
+  <section id="end" class="screen">
+    <div class="trophy">🏆</div>
+    <h1 id="endTitle"></h1>
+    <p class="big" id="endScore"></p>
+    <p class="sub" id="endInfo"></p>
+    <p class="meta" id="bestEnd"></p>
+    <button class="btn main" id="again">العب مرة أخرى</button>
+    <button class="btn ghost" id="home">القائمة الرئيسية</button>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+["من أصغر هداف في تاريخ كأس العالم؟","بيليه","مبابي","ميسي","رونالدو",3]
+];
